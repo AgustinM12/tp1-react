@@ -1,18 +1,57 @@
-import Header from "./Header"
-import Footer from "./Footer"
+import Header from "../components/Header"
+import Footer from "../components/Footer"
 import googleLogo from "../../public/img/logoGoogle.jpg"
 import { useState } from "react"
 
 
 
-export const App = () => {
+export const Login = () => {
 
   //OCULTAR LA CONTRASEÑA
-  const [ocultarPassword, setOcultarPassword] = useState(false)
+  const [ocultarPassword, setOcultarPassword] = useState(false);
+  const [userNameOrEmail, setUserNameOrEmail] = useState(''); // Estado para el nombre de usuario o correo electrónico
+  const [userPassword, setUserPassword] = useState(''); // Estado para la contraseña
 
   const functionOcultarContraseña = () => {
     setOcultarPassword((passwordVisible) => !passwordVisible)
   }
+
+  const handleNameOrEmailChange = (e) => {
+    setUserNameOrEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setUserPassword(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Utiliza los valores de estado para construir los datos a enviar en la solicitud fetch
+    const userCredentials = {
+      user_name: userNameOrEmail,
+      user_email: userNameOrEmail,
+      user_password: userPassword,
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userCredentials), // Envía los datos del formulario
+      });
+
+      if (response.ok) {
+        
+        console.log("exito");
+      }
+      // Resto del código de manejo de respuesta...
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
+    }
+  };
 
   //SPAN DE LOGIN
 
@@ -22,7 +61,7 @@ export const App = () => {
 
       <main className="colorFondo">
 
-        <form action="#" id="formLogin">
+        <form action="#" id="formLogin" onSubmit={handleSubmit}>
 
           <div className="bg-light p-4 rounded-5" >
             <h1 className="text-center fs-3 fw-bold">Login</h1>
@@ -30,7 +69,9 @@ export const App = () => {
             <div className="input-group mt-3">
               <div className="input-group-text bg-primary"></div>
               <input className="form-control" type="text" placeholder="Nombre de usuario o correo" id="nombreEmail"
-                name="nombreEmail" required />
+                name="nombreEmail"   value={userNameOrEmail} // Enlazar el valor al estado
+                onChange={handleNameOrEmailChange} // Manejador de cambio
+                 />
             </div>
 
 
@@ -41,7 +82,8 @@ export const App = () => {
                 <div className="input-group-text bg-primary"></div>
 
                 <input className="form-control" type={ocultarPassword ? "text" : "password"}
-                  placeholder="Contraseña" id="contraseña" name="contraseña" required />
+                  placeholder="Contraseña" id="contraseña" name="contraseña"    value={userPassword}
+                  onChange={handlePasswordChange} />
 
                 <button type="button" className="btn btn-outline-primary" onClick={functionOcultarContraseña}>
                   <i className={ocultarPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>

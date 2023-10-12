@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { App } from './components/App.jsx'
-import "../public/css/App.css"
+import { Login } from './pages/Login.jsx'
+import "../public/css/Style.css"
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+ReactDOM.createRoot(document.getElementById('root')).render(<Login />)
